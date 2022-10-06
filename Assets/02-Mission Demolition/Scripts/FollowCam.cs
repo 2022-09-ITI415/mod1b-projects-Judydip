@@ -15,19 +15,41 @@ public class FollowCam : MonoBehaviour
 
     void Awake()
     {
-        camZ = this.transform.position.z;    
+        camZ = this.transform.position.z;
     }
+
+    //Trying to allow early rest of camera OnMouseDown()
+
 
     void FixedUpdate()
     {
-        if (POI == null) return;
-        Vector3 destination = POI.transform.position;
+        //if (POI == null) return;
+        //Vector3 destination = POI.transform.position;
+
+        Vector3 destination;
+        if (POI == null)
+        {
+            destination = Vector3.zero;
+        } else
+        {
+            destination = POI.transform.position;
+            if (POI.tag == "Projectile")
+            {
+                if (POI.GetComponent<Rigidbody>().IsSleeping())
+                {
+                    POI = null;
+                    return;
+                }
+            }
+        }
         destination = Vector3.Lerp(transform.position, destination, easing); //adds interpolation
         destination.z = camZ;
         transform.position = destination;
 
         destination.x = Mathf.Max(minXY.x, destination.x);
         destination.y = Mathf.Max(minXY.y, destination.y);
+
+        Camera.main.orthographicSize = destination.y + 10;
 
     }
 
@@ -40,6 +62,10 @@ public class FollowCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            POI = null;
+            return;
+        }
     }
 }
