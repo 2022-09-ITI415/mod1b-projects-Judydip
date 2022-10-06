@@ -9,6 +9,7 @@ TagManager:
   - Death
   - PickUp
   - Flag
+  - canBreak
   layers:
   - Default
   - TransparentFX

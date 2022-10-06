@@ -15,6 +15,7 @@ public class modController : MonoBehaviour
     //public Text winText;
     public Text uitWelcome;
     public Text uitFlag;
+    public Text uitBreak;
 
     private Rigidbody rb;
     private int pickUpCount;
@@ -29,6 +30,11 @@ public class modController : MonoBehaviour
         uitWelcome.enabled = true;
         Invoke("welcomeDecay", 7f);
         uitFlag.enabled = false;
+        uitBreak.enabled = false;
+    }
+    void welcomeDecay()
+    {
+        uitWelcome.enabled = false;
     }
 
     private void Update()
@@ -38,9 +44,11 @@ public class modController : MonoBehaviour
             SceneManager.LoadScene("Main-Prototype 1");
         }
     }
-    void welcomeDecay()
+    private void FixedUpdate()
     {
-        uitWelcome.enabled = false;
+        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
+
+        rb.AddForce(movement * speed);
     }
 
     private void OnMove(InputValue movementValue)
@@ -50,21 +58,10 @@ public class modController : MonoBehaviour
         movementX = movementVector.x;
         movementY = movementVector.y;
     }
-    private void FixedUpdate()
-    {
-        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
-
-        rb.AddForce(movement * speed);
-    }
 
     void SetPUCount()
     {
         uitPickUp.text = "Coins: " + (pickUpCount);
-    }
-
-    void needCoins()
-    {
-        uitFlag.enabled = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -84,16 +81,31 @@ public class modController : MonoBehaviour
         {
             if (pickUpCount < 5)
             {
-                print("if-else should be working.");
                 uitFlag.text = "You only have " + pickUpCount + " Coins. Come back with 5!";
                 uitFlag.enabled = true;
-                Invoke("needCoins", 3f);
+                //Invoke("needCoins", 3f); //realized I could just do onTriggerEnter enable and onTriggerExit set to false
             }
             else
                 {
-                uitFlag.text = "You Win! Hit E to restart.";
+                uitFlag.text = "You Win! Hit 'R' to restart.";
                 uitFlag.enabled = true;
             }
         }
+        if (other.gameObject.CompareTag("canBreak"))
+        {
+            uitBreak.text = "Hit 'E' to break crate";
+            uitBreak.enabled = true;
+            if (Input.GetKeyDown(KeyCode.E)) //problem with this working. Ask prof?
+            {
+                other.gameObject.SetActive(false);
+                //Destroy(other.gameObject);
+            }
+
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        uitFlag.enabled = false;
+        uitBreak.enabled = false;
     }
 }
