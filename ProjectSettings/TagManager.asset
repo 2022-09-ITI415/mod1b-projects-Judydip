@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Apple
   - Projectile
+  - Death
+  - PickUp
+  - Flag
   layers:
   - Default
   - TransparentFX
