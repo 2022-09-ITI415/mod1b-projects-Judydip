@@ -91,18 +91,23 @@ public class modController : MonoBehaviour
                 uitFlag.enabled = true;
             }
         }
+    }
+
+private void OnTriggerStay(Collider other){
         if (other.gameObject.CompareTag("canBreak"))
         {
             uitBreak.text = "Hit 'E' to break crate";
             uitBreak.enabled = true;
-            if (Input.GetKeyDown(KeyCode.E)) //problem with this working. Ask prof?
+            if (Input.GetKeyDown(KeyCode.E)) //problem with this working. Ask prof? //can create a script for the cube that is looking for a msg from this code to give permission to break.
             {
+                Debug.Log("pressing E"); //more options alt to print
                 other.gameObject.SetActive(false);
                 //Destroy(other.gameObject);
             }
 
         }
-    }
+}
+
     private void OnTriggerExit(Collider other)
     {
         uitFlag.enabled = false;
